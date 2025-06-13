@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title th:text="${isNew} ? 'Create New Event' : 'Edit Event'">Event Form</title>
+</head>
+<body>
+    <section>
+        <div class="row mb-4">
+            <div class="col">
+                <h2 th:text="${isNew} ? 'Create New Event' : 'Edit Event'">Event Form</h2>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{${isNew ? '/event' : '/event/' + event.id}}" th:method="${isNew ? 'post' : 'put'}" th:object="${event}">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Event Name</label>
+                        <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date and Time</label>
+                        <input type="datetime-local" class="form-control" id="date" th:field="*{date}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="venue" class="form-label">Venue</label>
+                        <input type="text" class="form-control" id="venue" th:field="*{venue}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" th:field="*{description}" rows="5" required></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{/events}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save Event</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Format the date-time for the input field
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateField = document.getElementById('date');
+            if (dateField.value) {
+                // If editing an existing event, format the date
+                const date = new Date(dateField.value);
+                const formattedDate = date.toISOString().slice(0, 16);
+                dateField.value = formattedDate;
+            } else {
+                // If creating a new event, set default to current time + 1 hour
+                const now = new Date();
+                now.setHours(now.getHours() + 1);
+                const formattedDate = now.toISOString().slice(0, 16);
+                dateField.value = formattedDate;
+            }
+        });
+    </script>
+</body>
+</html>
